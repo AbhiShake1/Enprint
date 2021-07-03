@@ -1,21 +1,38 @@
 package abhi.activity.camera;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.view.TextureView;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 
 import com.abhi.enprint.MainActivity;
 import com.abhi.enprint.R;
 
-public class Main {
+import abhi.utils.Loggable;
+import abhi.utils.Preferences;
 
-    MainActivity activity;
+public class Main implements Loggable {
+
+    private MainActivity activity;
 
     private Button shutterButton;
-    private TextureView textureView;
+    public static TextureView textureView;
+
+    public static final int REQUEST_CAMERA_PERMISSION = 200;
+
+    static Handler mBackgroundHandler;
+    static HandlerThread mBackgroundThread;
 
     public Main(MainActivity activity){//main main activity
         this.activity=activity;
@@ -26,33 +43,66 @@ public class Main {
         assert textureView != null; //throws assertion error if null
 
         //
-        textureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
-            @Override
-            public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surface, int width, int height) {
-                openCamera();
-            }
-
-            @Override
-            public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture surface, int width, int height) {
-
-            }
-
-            @Override
-            public boolean onSurfaceTextureDestroyed(@NonNull SurfaceTexture surface) {
-                return false;
-            }
-
-            @Override
-            public void onSurfaceTextureUpdated(@NonNull SurfaceTexture surface) {
-
-            }
-        });
+        textureView.setSurfaceTextureListener(textureListener);
+        //checkPermission();
 
         shutterButton = activity.findViewById(R.id.shutterButton);
-        shutterButton.setOnClickListener(view->{
-            new Capture().takePicture();
-        });
+        shutterButton.setOnClickListener(view->new CaptureSession().takePicture(activity));
     }
+    /*
+    private void browse() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("text/xml");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        activity.startActivityForResult(
+                Intent.createChooser(intent, "Select a File to Upload"),
+                0);
+    }*/
 
-    private void openCamera(){}
+    public TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
+        @RequiresApi(api = Build.VERSION_CODES.R)
+        @Override
+        public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surface, int width, int height) {
+            new CameraManager().openCamera(activity);
+        }
+
+        @Override
+        public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture surface, int width, int height) {
+
+        }
+
+        @Override
+        public boolean onSurfaceTextureDestroyed(@NonNull SurfaceTexture surface) {
+            return false;
+        }
+
+        @Override
+        public void onSurfaceTextureUpdated(@NonNull SurfaceTexture surface) {
+
+        }
+    };
+
+    public void surfaceTextureListener(){
+        if(textureView.isAvailable()){
+            new CameraManager().openCamera(activity);
+        }else{
+            textureView.setSurfaceTextureListener(textureListener);
+        }
+    }
+    public void startBackgroundThread(){
+        mBackgroundThread = new HandlerThread("Camera Background");
+        mBackgroundThread.start(); //run in separate parallel thread
+        mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
+    }
+    public void stopBackgroundThread(){
+        mBackgroundThread.quitSafely(); //wait for background process to complete then quit
+        //reset values
+        try{
+            mBackgroundThread.join();
+            mBackgroundThread = null;
+            mBackgroundHandler = null;
+        }catch (InterruptedException ie){
+            getLog(ie.getCause());
+        }
+    }
 }

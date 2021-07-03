@@ -1,67 +1,74 @@
 package abhi.utils;
 
 
-public class Preferences {
-    //singleton class
-    private static Preferences preferences;
+import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
-    //creating a node tree to store values and make them persistent
-    private java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userNodeForPackage(Preferences.class);
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Properties;
+
+public class Preferences implements Loggable{
+
+    private static Preferences preferences;
 
     private Preferences(){ //blocking constructor from being accessed directly
 
     }
 
-    public static Preferences getInstance(){ //singleton access
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+    //accessing private AppGlobals class using reflection
+    private Context getContext(){
+        Context context = null;
+        try{
+            Method method = Class.forName("android.app.AppGlobals").getMethod("getInitialApplication");
+            Application application = (Application) method.invoke(null);
+            String packageName = application.getPackageName();
+            context = application.createPackageContext(packageName,Context.CONTEXT_INCLUDE_CODE)
+                    .getApplicationContext();
+        }catch (Exception e){
+            getLog(e.getCause());
+        }
+        return context;
+    }
+    //singleton access for constructor
+    public static Preferences getInstance(){
         if (preferences == null) preferences=new Preferences();
         return preferences;
     }
 
     public int getInt(String key){
-        return prefs.getInt(key, 0); //2nd arg->default value if key is unset
+        return Integer.parseInt(getString(key));
     }
 
     public float getFloat(String key){
-        return prefs.getFloat(key, 0.0f);
+        return Float.parseFloat(getString(key));
     }
 
     public double getDouble(String key){
-        return prefs.getDouble(key, 0.0);
+        return Double.parseDouble(getString(key));
     }
 
     public long getLong(String key){
-        return prefs.getLong(key, 0L);
+        return Long.parseLong(getString(key));
     }
 
     public boolean getBoolean(String key){
-        return prefs.getBoolean(key, false);
+        return Boolean.parseBoolean(getString(key));
     }
 
     public String getString(String key){
-        return prefs.get(key, "");
+        //2nd arg->default value if key value unset or illegal value set
+        return sharedPreferences.getString(key, "0");
     }
 
-    public void setInt(String key, int value){
-        prefs.putInt(key, value); //value will be forced when function runs
-    }
-
-    public void setFloat(String key, float value){
-        prefs.putFloat(key, value);
-    }
-
-    public void setDouble(String key, double value){
-        prefs.putDouble(key, value);
-    }
-
-    public void setLong(String key, long value){
-        prefs.putLong(key, value);
-    }
-
-    public void setBoolean(String key, boolean value){
-        prefs.putBoolean(key, value);
-    }
-
-    public void setString(String key, String value){
-        prefs.put(key, value);
+    public void setValue(String key, String value){
+        sharedPreferences.edit().putString(key, value).apply(); //works for all datatypes
     }
 }

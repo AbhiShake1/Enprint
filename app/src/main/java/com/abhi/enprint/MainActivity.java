@@ -1,31 +1,49 @@
 package com.abhi.enprint;
 
-import abhi.activity.camera.Main;
-import androidx.appcompat.app.AppCompatActivity;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import abhi.activity.camera.Main;
+import abhi.utils.Preferences;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Used to load the 'native-lib' library on application startup.
-    static {
-        //System.loadLibrary("native-lib");
-    }
+    private static MainActivity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activity=this;
         setContentView(R.layout.activity_main);
-
-        // Example of a call to a native method
-        // TextView tv = findViewById(R.id.sample_text);
-        //tv.setText(stringFromJNI());
-
-        new Main(this).onCreate(); //camera main activity
+        new Main(this).onCreate();
     }
 
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    //public native String stringFromJNI();
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == Main.REQUEST_CAMERA_PERMISSION) {
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission required to access camera", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Main cameraActivity = new Main(this);
+        cameraActivity.startBackgroundThread();
+        Main.textureView.setSurfaceTextureListener(new Main(this).textureListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        new Main(this).stopBackgroundThread();
+    }
 }
