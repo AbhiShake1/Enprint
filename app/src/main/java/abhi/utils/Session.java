@@ -4,6 +4,11 @@ package abhi.utils;
 import com.abhi.enprint.MainActivity;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
 public class Session implements Loggable{
     private static Session session;
@@ -15,7 +20,7 @@ public class Session implements Loggable{
         return session;
     }
 
-    public void fullRestart(){
+    private MainActivity getMainActivity(){
         MainActivity activity = null;
         //accessing private variable
         try {
@@ -26,7 +31,11 @@ public class Session implements Loggable{
             getLog(e.getCause());
         }
         assert activity != null; //check if variable was successfully accessed
-        //using accessed variable
+        return activity;
+    }
+
+    public void restartMainActivity(){
+        MainActivity activity = getMainActivity();
         activity.finish();
         activity.startActivity(activity.getIntent());
         activity.overridePendingTransition(0,0);
