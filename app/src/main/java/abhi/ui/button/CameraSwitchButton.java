@@ -8,12 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import com.abhi.enprint.MainActivity;
-
-import java.lang.reflect.Field;
-
 import abhi.utils.Loggable;
 import abhi.utils.Preferences;
+import abhi.utils.Session;
 
 public class CameraSwitchButton extends Main implements Loggable {
 
@@ -36,20 +33,8 @@ public class CameraSwitchButton extends Main implements Loggable {
         int state = Preferences.getInstance().getInt("pref_lens_key");
         state=(state+1)%2;
         Preferences.getInstance().setValue("pref_lens_key",String.valueOf(state));
-        new abhi.activity.camera.Main(getActivity()).reOpen();
+        Session.getInstance().fullRestart();
         //int[] backgrounds = {R.drawable.ic_launcher_background,R.drawable.ic_launcher_foreground};
         //setBackgroundResource(backgrounds[state]);
-    }
-
-    private MainActivity getActivity(){
-        MainActivity activity = null;
-        try{
-            Field a = MainActivity.class.getDeclaredField("activity");
-            a.setAccessible(true);
-            activity = (MainActivity) a.get(null);
-        }catch (Exception e){
-            getLog(e.getCause());
-        }
-        return activity;
     }
 }
