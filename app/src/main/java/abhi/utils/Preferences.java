@@ -3,15 +3,11 @@ package abhi.utils;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.Properties;
 
 public class Preferences implements Loggable{
 
@@ -29,6 +25,7 @@ public class Preferences implements Loggable{
         try{
             Method method = Class.forName("android.app.AppGlobals").getMethod("getInitialApplication");
             Application application = (Application) method.invoke(null);
+            assert application != null;
             String packageName = application.getPackageName();
             context = application.createPackageContext(packageName,Context.CONTEXT_INCLUDE_CODE)
                     .getApplicationContext();

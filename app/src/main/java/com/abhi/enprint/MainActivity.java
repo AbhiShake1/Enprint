@@ -1,18 +1,19 @@
 package com.abhi.enprint;
 
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import abhi.activity.camera.Main;
-import abhi.utils.Preferences;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static MainActivity activity;
+    private static MainActivity activity; //is accessed in different places via reflection
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,11 +34,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     protected void onResume() {
         super.onResume();
-        Main cameraActivity = new Main(this);
-        cameraActivity.startBackgroundThread();
+        new Main(this).startBackgroundThread();
         Main.textureView.setSurfaceTextureListener(new Main(this).textureListener);
     }
 

@@ -11,8 +11,6 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
 import android.media.Image;
 import android.media.ImageReader;
-import android.os.Build;
-import android.os.Environment;
 import android.util.Size;
 import android.view.Surface;
 import android.widget.Toast;
@@ -21,12 +19,10 @@ import androidx.annotation.NonNull;
 
 import com.abhi.enprint.MainActivity;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import abhi.io.PictureWriter;
 import abhi.utils.Loggable;
