@@ -21,7 +21,6 @@ import androidx.annotation.NonNull;
 import com.abhi.enprint.MainActivity;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -35,15 +34,15 @@ public class CaptureSession implements Loggable {
     CameraCaptureSession captureSession;
     CaptureRequest.Builder captureRequestBuilder;
     void takePicture(MainActivity activity){
-        if(new CameraDevice().cameraDevice == null) return;
+        if(CameraDevice.cameraDevice == null) return;
         CameraManager cameraManager = (CameraManager)activity //camera2/CameraManager
                 .getSystemService(Context.CAMERA_SERVICE);
         try{ //camera2/CameraCharacteristics
             CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(
-                    new CameraDevice().cameraDevice.getId()
+                    CameraDevice.cameraDevice.getId()
             );
-            Size[] jpgSizes = null;
-            if(cameraManager!=null) jpgSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
+            Size[] jpgSizes;
+            jpgSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
                     .getOutputSizes(ImageFormat.JPEG); //api level full
 
             //capture images with custom size
@@ -55,21 +54,20 @@ public class CaptureSession implements Loggable {
             }
             //width,height,format,max images
             ImageReader imageReader = ImageReader.newInstance(width,height,ImageFormat.JPEG,35);
-            List<Surface> outputSurface = new ArrayList();
+            List<Surface> outputSurface = new ArrayList<>();
             outputSurface.add(imageReader.getSurface());
             outputSurface.add(new Surface(Main.textureView.getSurfaceTexture()));
 
-            CaptureRequest.Builder captureBuilder = new CameraDevice().cameraDevice
+            CaptureRequest.Builder captureBuilder = CameraDevice.cameraDevice
                     .createCaptureRequest(android.hardware.camera2.CameraDevice.TEMPLATE_STILL_CAPTURE);
             captureBuilder.addTarget(imageReader.getSurface());
             //auto control exposure, white balance, focus
             captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
 
             //check orientation based on device
-            int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
             //captureBuilder.set(CaptureResult.JPEG_ORIENTATION, new Orientation().ORIENTATIONS.get(rotation));
 
-            new PictureWriter().setFile(new File(Environment.getExternalStorageDirectory()+File.separator+
+            PictureWriter.setFile(new File(Environment.getExternalStorageDirectory()+File.separator+
                     UUID.randomUUID()+".jpg"));
 
             ImageReader.OnImageAvailableListener readerListener = (imageReader1)->{
@@ -80,12 +78,9 @@ public class CaptureSession implements Loggable {
                     byte[] bytes = new byte[buffer.capacity()];
                     buffer.get(bytes);
                     new PictureWriter().save(bytes);
-                }catch (FileNotFoundException fnfe){
+                } catch (IOException fnfe){
                     getLog(fnfe.getCause());
-                }catch (IOException ioe){
-                    getLog(ioe.getCause());
-                }
-                finally {//execute even if exception is thrown/caught
+                } finally {//execute even if exception is thrown/caught
                     {
                         if(image!=null) image.close();
                     }
@@ -102,7 +97,7 @@ public class CaptureSession implements Loggable {
                 }
             };
 
-            new CameraDevice().cameraDevice.createCaptureSession(outputSurface, new CameraCaptureSession.StateCallback() {
+            CameraDevice.cameraDevice.createCaptureSession(outputSurface, new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigured(@NonNull CameraCaptureSession session) {
                     try{

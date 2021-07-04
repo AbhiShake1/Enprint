@@ -2,7 +2,6 @@ package abhi.activity.camera;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -11,7 +10,6 @@ import android.hardware.camera2.params.StreamConfigurationMap;
 import android.os.Build;
 import android.util.SparseIntArray;
 import android.view.Surface;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
@@ -33,13 +31,12 @@ public class CameraManager implements Loggable {
         ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }
 
-    private String cameraId;
-
     @RequiresApi(api = Build.VERSION_CODES.R)
     public void openCamera(MainActivity activity){
-        android.hardware.camera2.CameraManager cameraManager = (android.hardware.camera2.CameraManager)activity.getSystemService(Context.CAMERA_SERVICE);
+        android.hardware.camera2.CameraManager cameraManager =
+                (android.hardware.camera2.CameraManager)activity.getSystemService(Context.CAMERA_SERVICE);
         try {
-            cameraId = cameraManager.getCameraIdList()[
+            String cameraId = cameraManager.getCameraIdList()[
                     Preferences.getInstance().getInt("pref_lens_key")]; //first logical id. usually main lens
             //get properties of id "x" such as focal length, aperture etc
             CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(cameraId);

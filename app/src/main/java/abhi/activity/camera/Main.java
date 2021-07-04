@@ -1,32 +1,24 @@
 package abhi.activity.camera;
 
-import android.Manifest;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.view.TextureView;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
 
 import com.abhi.enprint.MainActivity;
 import com.abhi.enprint.R;
 
 import abhi.utils.Loggable;
-import abhi.utils.Preferences;
 
 public class Main implements Loggable {
 
-    private MainActivity activity;
+    private final MainActivity activity;
 
-    private Button shutterButton;
     public static TextureView textureView;
 
     public static final int REQUEST_CAMERA_PERMISSION = 200;
@@ -46,7 +38,7 @@ public class Main implements Loggable {
         textureView.setSurfaceTextureListener(textureListener);
         //checkPermission();
 
-        shutterButton = activity.findViewById(R.id.shutterButton);
+        Button shutterButton = activity.findViewById(R.id.shutterButton);
         shutterButton.setOnClickListener(view->new CaptureSession().takePicture(activity));
     }
     /*
@@ -82,7 +74,8 @@ public class Main implements Loggable {
         }
     };
 
-    public void surfaceTextureListener(){
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    public void reOpen(){
         if(textureView.isAvailable()){
             new CameraManager().openCamera(activity);
         }else{

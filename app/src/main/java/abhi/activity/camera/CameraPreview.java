@@ -4,19 +4,14 @@ import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CaptureRequest;
-import android.media.ImageReader;
 import android.util.Size;
 import android.view.Surface;
-
 import androidx.annotation.NonNull;
-
-import java.util.Arrays;
-
+import java.util.Collections;
 import abhi.utils.Loggable;
 
 public class CameraPreview  implements Loggable {
     static Size imageDimension;
-    ImageReader imageReader;
 
     void createCameraPreview() {
         try{
@@ -26,13 +21,13 @@ public class CameraPreview  implements Loggable {
             Surface surface = new Surface(texture);
             CaptureSession captureSession = new CaptureSession();
             CameraDevice cameraDevice = new CameraDevice();
-            captureSession.captureRequestBuilder = cameraDevice.cameraDevice
+            captureSession.captureRequestBuilder = CameraDevice.cameraDevice
                     .createCaptureRequest(android.hardware.camera2.CameraDevice.TEMPLATE_PREVIEW);
             captureSession.captureRequestBuilder.addTarget(surface);
-            cameraDevice.cameraDevice.createCaptureSession(Arrays.asList(surface), new CameraCaptureSession.StateCallback() {
+            CameraDevice.cameraDevice.createCaptureSession(Collections.singletonList(surface), new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigured(@NonNull CameraCaptureSession session) {
-                    if(cameraDevice.cameraDevice==null) return;
+                    if(CameraDevice.cameraDevice ==null) return;
                     captureSession.captureSession=session;
                     updatePreview(cameraDevice, captureSession);
                 }
