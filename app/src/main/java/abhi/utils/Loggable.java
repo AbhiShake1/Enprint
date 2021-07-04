@@ -13,10 +13,10 @@ public interface Loggable {
     default <T> void getLog(T... msg) {
         for(T val : msg){
             if(!val.getClass().isArray()){
-                Log.i(TAG(), (String) val); //if array
+                Log.i(TAG(), String.valueOf(val)); //if array
             }else{
                 for(int i=0;i< Array.getLength(val);i++){
-                    Log.i(TAG(), (String) Array.get(val,i));
+                    Log.i(TAG(), String.valueOf(Array.get(val,i)));
                 }
             }
         }
