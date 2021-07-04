@@ -43,13 +43,16 @@ public class CameraPreview  implements Loggable {
     }
 
     private void updatePreview(CameraDevice cameraDevice, CaptureSession captureSession){
-        if (cameraDevice == null) getLog("camera device null. preview can not be updated");
-        captureSession.captureRequestBuilder.set(CaptureRequest.CONTROL_MODE,CaptureRequest.CONTROL_MODE_AUTO);
-        try{
-            captureSession.captureSession.setRepeatingRequest(captureSession.captureRequestBuilder.build(),
-                    null, Main.mBackgroundHandler);
-        }catch (CameraAccessException cae){
-            getLog(cae.getCause());
-        }
+        Thread previewThread = new Thread(()->{ //avoid a slight delay after capture completes
+            if (cameraDevice == null) getLog("camera device null. preview can not be updated");
+            captureSession.captureRequestBuilder.set(CaptureRequest.CONTROL_MODE,CaptureRequest.CONTROL_MODE_AUTO);
+            try{
+                captureSession.captureSession.setRepeatingRequest(captureSession.captureRequestBuilder.build(),
+                        null, Main.mBackgroundHandler);
+            }catch (CameraAccessException cae){
+                getLog(cae.getCause());
+            }
+        });
+        previewThread.start();
     }
 }

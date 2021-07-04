@@ -89,7 +89,7 @@ public class CaptureSession implements Loggable {
                 public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
                     Toast.makeText(activity,"Capture completed",Toast.LENGTH_SHORT).show();
-                    new CameraPreview().createCameraPreview();
+                    new CameraPreview().createCameraPreview(); //will get locked/stuck if preview not recreated
                 }
             };
 

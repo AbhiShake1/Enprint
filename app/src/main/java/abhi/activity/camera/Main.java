@@ -34,12 +34,18 @@ public class Main implements Loggable {
         textureView = activity.findViewById(R.id.textureView);
         assert textureView != null; //throws assertion error if null
 
-        //
-        textureView.setSurfaceTextureListener(textureListener);
-        //checkPermission();
+        /*
+        *run texture rendering and capture processes in a parallel thread to slightly optimize performance
+        *note that the overall execution speed will not get increased, power of threads will split
+        *and 2 processes can run at once
+        */
+        Thread thread1 = new Thread(()->{
+            textureView.setSurfaceTextureListener(textureListener);
 
-        Button shutterButton = activity.findViewById(R.id.shutterButton);
-        shutterButton.setOnClickListener(view->new CaptureSession().takePicture(activity));
+            Button shutterButton = activity.findViewById(R.id.shutterButton);
+            shutterButton.setOnClickListener(view->new CaptureSession().takePicture(activity));
+        });
+        thread1.start();
     }
     /*
     private void browse() {
