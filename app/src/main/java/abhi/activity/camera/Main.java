@@ -75,13 +75,7 @@ public class Main implements Loggable {
     };
 
     @RequiresApi(api = Build.VERSION_CODES.R)
-    public void reOpen(){
-        if(textureView.isAvailable()){
-            new CameraManager().openCamera(activity);
-        }else{
-            textureView.setSurfaceTextureListener(textureListener);
-        }
-    }
+
     public void startBackgroundThread(){
         mBackgroundThread = new HandlerThread("Camera Background");
         mBackgroundThread.start(); //run in separate parallel thread
