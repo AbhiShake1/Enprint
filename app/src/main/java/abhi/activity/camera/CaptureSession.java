@@ -11,6 +11,7 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
 import android.media.Image;
 import android.media.ImageReader;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Size;
 import android.view.Surface;
@@ -67,8 +68,14 @@ public class CaptureSession implements Loggable {
             //check orientation based on device
             //captureBuilder.set(CaptureResult.JPEG_ORIENTATION, new Orientation().ORIENTATIONS.get(rotation));
 
-            PictureWriter.setFile(new File(Environment.getExternalStorageDirectory()+File.separator+
-                    UUID.randomUUID()+".jpg"));
+            File saveFolder = new File(Environment.getExternalStorageDirectory()+File.separator+
+                    Environment.DIRECTORY_DCIM);
+            File imgPath = new File(saveFolder+File.separator+"Enprint"+File.separator+"IMG_ENPRINT_"
+                    +System.currentTimeMillis()+"_"+ Build.MODEL +".jpg");
+            if(!saveFolder.exists()){
+                saveFolder.mkdirs();
+            }
+            PictureWriter.setFile(imgPath);
 
             ImageReader.OnImageAvailableListener readerListener = (imageReader1)->{
                 Image image = null;
