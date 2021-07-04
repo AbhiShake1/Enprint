@@ -14,24 +14,20 @@ public class PictureWriter {
     public static void saveToFile(){
         File saveFolder = new File(Environment.getExternalStorageDirectory()+File.separator+
                 Environment.DIRECTORY_DCIM);
-        file = new File(saveFolder+File.separator+"Enprint"+File.separator+"IMG_ENPRINT_"
-                +System.currentTimeMillis()+"_"+ Build.DEVICE +".jpg");
         if(!saveFolder.exists()){
             saveFolder.mkdirs();
         }
+        file = new File(saveFolder+File.separator+"Enprint"+File.separator+"IMG_ENPRINT_"
+                +System.currentTimeMillis()+"_"+ Build.DEVICE +".jpg");
     }
-    
+
     public static File getFile(){
         return file;
     }
 
     public void save(byte[] bytes) throws IOException {
-        OutputStream outputStream = null;
-        try{
-            outputStream = new FileOutputStream(file);
+        try (OutputStream outputStream = new FileOutputStream(file)) {
             outputStream.write(bytes);
-        }finally {
-            if(outputStream!=null) outputStream.close();
         }
     }
 }
