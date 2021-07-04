@@ -68,14 +68,7 @@ public class CaptureSession implements Loggable {
             //check orientation based on device
             //captureBuilder.set(CaptureResult.JPEG_ORIENTATION, new Orientation().ORIENTATIONS.get(rotation));
 
-            File saveFolder = new File(Environment.getExternalStorageDirectory()+File.separator+
-                    Environment.DIRECTORY_DCIM);
-            File imgPath = new File(saveFolder+File.separator+"Enprint"+File.separator+"IMG_ENPRINT_"
-                    +System.currentTimeMillis()+"_"+ Build.MODEL +".jpg");
-            if(!saveFolder.exists()){
-                saveFolder.mkdirs();
-            }
-            PictureWriter.setFile(imgPath);
+            PictureWriter.saveToFile();
 
             ImageReader.OnImageAvailableListener readerListener = (imageReader1)->{
                 Image image = null;
