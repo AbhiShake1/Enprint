@@ -16,12 +16,12 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/shutterButton"
-        android:layout_width="103dp"
-        android:layout_height="158dp"
+        android:layout_width="71dp"
+        android:layout_height="156dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="50dp"
-        android:layout_marginEnd="59dp"
+        android:layout_marginEnd="230dp"
         android:layout_marginBottom="5dp"
         android:layout_toEndOf="@+id/cameraSwitchButton"
         android:background="@drawable/shutter_button_ripple" />
