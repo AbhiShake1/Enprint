@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import abhi.activity.camera.Main;
 
-public class MainActivity extends AppCompatActivity {
+public final class MainActivity extends AppCompatActivity {
 
     private static MainActivity activity; //is accessed in different places via reflection
 
