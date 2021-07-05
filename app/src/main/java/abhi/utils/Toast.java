@@ -2,10 +2,12 @@ package abhi.utils;
 
 import android.content.Context;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.function.Supplier;
 
-public class Toast implements Loggable{
+public final class Toast implements Loggable{
     private static Toast toast;
     private Toast(){
 
@@ -15,20 +17,20 @@ public class Toast implements Loggable{
         return toast;
     }
 
-    private Context getContext(){
+    private final Supplier<Context> getContext =()->{
         Context context = null;
-        try {
-            Method c = Preferences.class.getMethod("getContext");
+        try{
+            Field c = Preferences.class.getDeclaredField("getContext");
             c.setAccessible(true);
-            context = (Context) c.invoke(Preferences.getInstance());
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            context = (Context) c.get(Preferences.getInstance());
+        }catch (IllegalAccessException | NoSuchFieldException e){
             getLog(e.getCause());
         }
         assert context!=null;
         return context;
-    }
+    };
 
     public <T> void show(T info){
-        android.widget.Toast.makeText(getContext(),String.valueOf(info), android.widget.Toast.LENGTH_SHORT).show();
+        android.widget.Toast.makeText(getContext.get(),String.valueOf(info), android.widget.Toast.LENGTH_SHORT).show();
     }
 }

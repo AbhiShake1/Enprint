@@ -8,8 +8,9 @@ import android.preference.PreferenceManager;
 
 
 import java.lang.reflect.Method;
+import java.util.function.Supplier;
 
-public class Preferences implements Loggable{
+public final class Preferences implements Loggable{
 
     private static Preferences preferences;
 
@@ -17,23 +18,6 @@ public class Preferences implements Loggable{
 
     }
 
-    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-    //accessing private AppGlobals class using reflection
-    private Context getContext(){
-        Context context = null;
-        try{
-            Method method = Class.forName("android.app.AppGlobals").getMethod("getInitialApplication");
-            Application application = (Application) method.invoke(null);
-            assert application != null;
-            String packageName = application.getPackageName();
-            context = application.createPackageContext(packageName,Context.CONTEXT_INCLUDE_CODE)
-                    .getApplicationContext();
-        }catch (Exception e){
-            getLog(e.getCause());
-        }
-        return context;
-    }
     //singleton access for constructor
     public static Preferences getInstance(){
         if (preferences == null) preferences=new Preferences();
@@ -68,4 +52,23 @@ public class Preferences implements Loggable{
     public void setValue(String key, String value){
         sharedPreferences.edit().putString(key, value).apply(); //works for all datatypes
     }
+
+    //accessing private AppGlobals class using reflection
+    private final Supplier<Context> getContext = ()->{
+        //position of the supplier matters. cant be accessed above this
+        Context context = null;
+        try{
+            Method method = Class.forName("android.app.AppGlobals").getMethod("getInitialApplication");
+            Application application = (Application) method.invoke(null);
+            assert application != null;
+            String packageName = application.getPackageName();
+            context = application.createPackageContext(packageName,Context.CONTEXT_INCLUDE_CODE)
+                    .getApplicationContext();
+        }catch (Exception e){
+            getLog(e.getCause());
+        }
+        return context;
+    };
+    //position of this variable does not matter
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext.get());
 }
