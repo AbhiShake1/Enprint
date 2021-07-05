@@ -31,8 +31,8 @@ public final class CameraSwitchButton extends Main implements Loggable {
     @Override
     protected void onClick() {
         int state = Preferences.getInstance().getInt("pref_lens_key");
-        state=(state+1)%2;
-        Preferences.getInstance().setValue("pref_lens_key",String.valueOf(state));
+        Preferences.getInstance().setValue("pref_lens_key",
+                String.valueOf((state+1)%2));
         Session.getInstance().restartMainActivity();
         //int[] backgrounds = {R.drawable.ic_launcher_background,R.drawable.ic_launcher_foreground};
         //setBackgroundResource(backgrounds[state]);
