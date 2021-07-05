@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 
 
 import java.lang.reflect.Method;
+import java.util.Set;
 import java.util.function.Supplier;
 
 public final class Preferences implements Loggable{
@@ -51,6 +52,14 @@ public final class Preferences implements Loggable{
 
     public void setValue(String key, String value){
         sharedPreferences.edit().putString(key, value).apply(); //works for all datatypes
+    }
+
+    public void setList(String key, Set set){
+        sharedPreferences.edit().putStringSet(key, set).apply();
+    }
+
+    public Set getListSet(String key){
+        return sharedPreferences.getStringSet(key, null); //no default values
     }
 
     //accessing private AppGlobals class using reflection
