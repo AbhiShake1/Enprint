@@ -27,7 +27,7 @@ import java.util.List;
 import abhi.io.PictureWriter;
 import abhi.utils.Loggable;
 
-public class CaptureSession implements Loggable {
+public final class CaptureSession implements Loggable {
     CameraCaptureSession captureSession;
     CaptureRequest.Builder captureRequestBuilder;
     void takePicture(MainActivity activity){

@@ -12,7 +12,7 @@ import abhi.utils.Loggable;
 import abhi.utils.Preferences;
 import abhi.utils.Session;
 
-public class CameraSwitchButton extends Main implements Loggable {
+public final class CameraSwitchButton extends Main implements Loggable {
 
     //super class already invokes init(non constructor)
     public CameraSwitchButton(@NonNull Context context) {

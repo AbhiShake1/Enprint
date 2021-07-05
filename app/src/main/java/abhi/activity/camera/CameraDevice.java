@@ -2,7 +2,7 @@ package abhi.activity.camera;
 
 import androidx.annotation.NonNull;
 
-public class CameraDevice {
+public final class CameraDevice {
     static android.hardware.camera2.CameraDevice cameraDevice;
 
     android.hardware.camera2.CameraDevice.StateCallback stateCallback = new android.hardware.camera2.CameraDevice.StateCallback() {

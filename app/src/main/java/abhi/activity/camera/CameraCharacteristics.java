@@ -1,5 +1,5 @@
 package abhi.activity.camera;
 
-public class CameraCharacteristics {
+public final class CameraCharacteristics {
     boolean mFlashSupported;
 }

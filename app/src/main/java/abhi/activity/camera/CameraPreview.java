@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import java.util.Collections;
 import abhi.utils.Loggable;
 
-public class CameraPreview  implements Loggable {
+public final class CameraPreview  implements Loggable {
     static Size imageDimension;
 
     void createCameraPreview() {

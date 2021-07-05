@@ -15,7 +15,7 @@ import com.abhi.enprint.R;
 
 import abhi.utils.Loggable;
 
-public class Main implements Loggable {
+public final class Main implements Loggable {
 
     private final MainActivity activity;
 

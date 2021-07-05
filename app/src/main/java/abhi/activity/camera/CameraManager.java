@@ -19,7 +19,8 @@ import com.abhi.enprint.MainActivity;
 import abhi.utils.Loggable;
 import abhi.utils.Preferences;
 
-public class CameraManager implements Loggable {
+public final class CameraManager implements Loggable {
+
     static final SparseIntArray ORIENTATIONS = new SparseIntArray();
 
     static {
@@ -60,6 +61,12 @@ public class CameraManager implements Loggable {
             }
         }catch (CameraAccessException cae){
             new CameraManager().getLog(cae.getCause());
+            new CameraManager2();
         }
+    }
+
+    private static final class CameraManager2{//not letting non-CameraManager classes access it
+        /*originally created by eszdman and photon camera team. Modified by abhi*/
+
     }
 }

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class Session implements Loggable{
+public final class Session implements Loggable{
     private static Session session;
     private Session(){
 

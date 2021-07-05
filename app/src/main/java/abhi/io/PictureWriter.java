@@ -8,7 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class PictureWriter {
+public final class PictureWriter {
     private static File file;
 
     public static void saveToFile(){
