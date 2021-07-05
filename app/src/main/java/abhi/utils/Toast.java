@@ -2,6 +2,8 @@ package abhi.utils;
 
 import android.content.Context;
 
+import com.abhi.enprint.MainActivity;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -17,20 +19,20 @@ public final class Toast implements Loggable{
         return toast;
     }
 
-    private final Supplier<Context> getContext =()->{
+    private final Context getContext(){
         Context context = null;
         try{
-            Field c = Preferences.class.getDeclaredField("getContext");
+            Field c = MainActivity.class.getDeclaredField("activity");
             c.setAccessible(true);
-            context = (Context) c.get(Preferences.getInstance());
+            context = (Context) c.get(null);
         }catch (IllegalAccessException | NoSuchFieldException e){
             getLog(e.getCause());
         }
         assert context!=null;
         return context;
-    };
+    }
 
     public <T> void show(T info){
-        android.widget.Toast.makeText(getContext.get(),String.valueOf(info), android.widget.Toast.LENGTH_SHORT).show();
+        android.widget.Toast.makeText(getContext(),String.valueOf(info), android.widget.Toast.LENGTH_SHORT).show();
     }
 }
