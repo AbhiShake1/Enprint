@@ -8,17 +8,17 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 
 public abstract class Main extends AppCompatButton {
-    public Main(@NonNull Context context) {
+    protected Main(@NonNull Context context) {
         super(context);
         init();
     }
 
-    public Main(@NonNull Context context, @Nullable AttributeSet attrs) {
+    protected Main(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public Main(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    protected Main(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
